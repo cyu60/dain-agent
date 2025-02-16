@@ -73,7 +73,7 @@ const getMeetingActionItemsConfig: ToolConfig = {
       },
       ui: new CardUIBuilder()
         .setRenderMode("page")
-        .title(`Action Items: ${meetingTitle}`)
+        .title(`Action Items:`)
         .content(`## Action Items\n${actionItems}`)
         .build(),
     };
@@ -280,9 +280,112 @@ Your presentation has been successfully generated from the meeting transcript. Y
   },
 };
 
+const textToSpeechConfig: ToolConfig = {
+  id: "generate-audio",
+  name: "Generate Audio",
+  description:
+    "Generates audio from text input with customizable voices and styles",
+  input: z
+    .object({
+      text: z.string().describe("The text to convert to speech"),
+    })
+    .describe("Input parameters for text-to-speech conversion"),
+  output: z
+    .object({
+      audioUrl: z.string().describe("URL to the generated audio file"),
+    })
+    .describe("Generated audio details"),
+  pricing: { pricePerUse: 0, currency: "USD" },
+  handler: async ({ text }, agentInfo, context) => {
+    console.log(
+      `User / Agent ${agentInfo.id} requested text-to-speech conversion: ${text}`
+    );
+
+    const response = await fetch(
+      "https://magicloops.dev/api/loop/5ce6905a-e6aa-47c7-854d-f40c5c14e1e2/run",
+      {
+        method: "POST",
+        body: JSON.stringify({ text }),
+      }
+    );
+
+    const responseJson = await response.json();
+
+    return {
+      text: `Converted text to speech`,
+      data: {
+        audioUrl: responseJson.audioUrl,
+      },
+      ui: new CardUIBuilder()
+        .setRenderMode("page")
+        .title("Text to Speech")
+        .content(
+          `Your text has been converted to speech. Listen below:
+          
+<audio controls>
+  <source src="${responseJson.audioUrl}" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+[Download Audio](${responseJson.audioUrl})`
+        )
+        .build(),
+    };
+  },
+};
+
+const generateAudioConfig: ToolConfig = {
+  id: "generate-audio",
+  name: "Generate Audio",
+  description:
+    "Generates audio from text input with customizable voices and styles",
+  input: z
+    .object({
+      text: z.string().describe("The text to convert to audio"),
+    })
+    .describe("Input parameters for audio generation"),
+  output: z
+    .object({
+      audioUrl: z.string().describe("URL to the generated audio file"),
+    })
+    .describe("Generated audio details"),
+  pricing: { pricePerUse: 0, currency: "USD" },
+  handler: async ({ text }, agentInfo, context) => {
+    console.log(
+      `User / Agent ${agentInfo.id} requested audio generation: ${text}`
+    );
+
+    const response = await fetch(
+      "https://magicloops.dev/api/loop/5ce6905a-e6aa-47c7-854d-f40c5c14e1e2/run",
+      {
+        method: "POST",
+        body: JSON.stringify({ text }),
+      }
+    );
+
+    const responseJson = await response.json();
+
+    return {
+      text: `Generated audio`,
+      data: {
+        audioUrl: responseJson.audioUrl,
+      },
+      ui: new CardUIBuilder()
+        .setRenderMode("page")
+        .title("Audio Generated")
+        .content(
+          `Your audio has been successfully generated. Listen below:
+
+[Download Audio](${responseJson.audioUrl})`
+        )
+        .build(),
+    };
+  },
+};
+
 const dainService = defineDAINService({
   metadata: {
-    title: "Productivity Tools Service",
+    title: "Flow Pilot Zoom Agent",
     description:
       "A DAIN service providing various productivity tools for task management, meetings, and calendar events",
     version: "1.0.0",
@@ -310,6 +413,8 @@ const dainService = defineDAINService({
     createCalendarEventConfig,
     getTranscriptConfig,
     generatePresentationConfig,
+    textToSpeechConfig,
+    generateAudioConfig,
   ],
 });
 
