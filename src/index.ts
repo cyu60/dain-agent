@@ -73,8 +73,8 @@ const getMeetingActionItemsConfig: ToolConfig = {
       },
       ui: new CardUIBuilder()
         .setRenderMode("page")
-        .title(`Action Items:`)
-        .content(`## Action Items\n${actionItems}`)
+        .title(`👨‍💻 Orchestrator Agent:`)
+        .content(`## Instructions\n${actionItems}`)
         .build(),
     };
   },
@@ -321,11 +321,6 @@ const textToSpeechConfig: ToolConfig = {
         .title("Text to Speech")
         .content(
           `Your text has been converted to speech. Listen below:
-          
-<audio controls>
-  <source src="${responseJson.audioUrl}" type="audio/mpeg">
-  Your browser does not support the audio element.
-</audio>
 
 [Download Audio](${responseJson.audioUrl})`
         )
@@ -391,6 +386,7 @@ const dainService = defineDAINService({
     version: "1.0.0",
     author: "Your Name",
     tags: ["productivity", "tasks", "calendar", "meetings"],
+    // logo: "https://lime-fantastic-carp-546.mypinata.cloud/files/bafkreigx6v6hzxeys6lfvrb3wtbczus7uf3lg3ugtkh35lh72yvx3obu6m?X-Algorithm=PINATA1&X-Date=1739708207&X-Expires=30&X-Method=GET&X-Signature=32bb51df63e5a44ec020a34bed76e56df0a333709e94ee7254b826d32add9b79",
     logo: "https://cdn-icons-png.flaticon.com/512/3281/3281289.png",
   },
   exampleQueries: [
